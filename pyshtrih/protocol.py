@@ -2,7 +2,7 @@
 
 
 import serial
-import unilog
+import logging
 
 from . import misc, excepts
 from .compat import unicode, xrange, str_compat
@@ -34,12 +34,14 @@ class Protocol(object):
         """
 
         self.port = port
-        self.serial = serial.Serial(
+        self.serial = serial.serial_for_url(
+            url=port,
             baudrate=baudrate,
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
             timeout=timeout,
-            writeTimeout=timeout
+            writeTimeout=timeout,
+            do_not_open=True
         )
         self.fs = fs
         self.connected = False
@@ -50,7 +52,7 @@ class Protocol(object):
         """
 
         if not self.connected:
-            self.serial.port = self.port
+            self.serial.url = self.port
             if not self.serial.isOpen():
                 try:
                     self.serial.open()
@@ -146,7 +148,7 @@ class Protocol(object):
         :rtype: dict
         :return: набор параметров в виде словаря
         """
-
+        logging.debug('received payload: %s', payload)
         payload = misc.bytearray_cast(payload)
 
         # предполагаем, что команда однобайтная
@@ -213,6 +215,7 @@ class Protocol(object):
 
             for _ in xrange(self.MAX_ATTEMPTS):
                 try:
+                    logging.debug('sending: %s', command)
                     self.serial.write(command)
                     byte = self.serial.read()
                     if byte == ACK:
@@ -308,7 +311,7 @@ class Response(object):
         return u'0x{:02X} ({}) - {}'.format(
             self.cmd,
             self.cmd_name,
-            unilog.as_unicode(self.params)
+            self.params
         )
 
     __repr__ = __str__

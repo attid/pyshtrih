@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
+from __future__ import print_function #compatible print function for Python 2 and 3
 from .utils import discovery
 from .protocol import Protocol
 from .device import ShtrihFRK, ShtrihFRPTK, ShtrihComboFRK, ShtrihComboPTK, ShtrihLightPTK, Shtrih950K, \
@@ -12,7 +12,7 @@ from .excepts import ProtocolError, NoConnectionError, UnexpectedResponseError, 
 from .fd import FD
 
 
-__version__ = '2.0.6'
+__version__ = '2.0.7'
 __all__ = (
     'discovery',
     'Protocol',

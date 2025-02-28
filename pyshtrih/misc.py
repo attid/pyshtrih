@@ -119,7 +119,8 @@ def prepare_string(string, length=DEFAULT_MIN_LENGTH):
         length = DEFAULT_MIN_LENGTH
 
     if string:
-        result = bytearray(encode(string)[:length])
+        string = encode(string)
+        result = bytearray(string[:length])
         result.extend(NULL * (length - len(string)))
     else:
         result = NULL * length
@@ -360,6 +361,7 @@ CHAR_SIZE = {
     '111': '<3B',
     '1111': '<4B',
     '11111': '<5B',
+    '111111': '<6B',
     '121': '<BHB'
 }
 
